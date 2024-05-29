@@ -78,7 +78,7 @@ resource "aws_route_table_association" "a_rt_project_subnet_private" {
 resource "aws_eip" "nat_eip" {
   domain = "vpc"
    tags = {
-    Name = "eip_nat_gw_project"
+    Name = "eip_nat_gw"
   }
 }
 
