@@ -29,6 +29,16 @@ resource "aws_subnet" "subnet_private_vpc_project" {
   }
 }
 
+# Agregar una subred en us-east-1a a la misma definición de recurso aws_subnet
+resource "aws_subnet" "subnet_private_vpc_project_az1" {
+  vpc_id            = aws_vpc.vpc_project.id
+  cidr_block        = "10.0.3.0/24"  
+  availability_zone = "us-east-1a"   # Zona de disponibilidad diferente
+  tags = {
+    Name = "subnet_private_vpc_project_az1"
+  }
+}
+
 # Internet Gateway para la subred pública
 resource "aws_internet_gateway" "gw_project" {
     vpc_id = aws_vpc.vpc_project.id
@@ -74,29 +84,36 @@ resource "aws_route_table_association" "a_rt_project_subnet_private" {
   route_table_id = aws_route_table.rt_private.id
 }
 
-# Crear un Elastic IP para el NAT Gateway / NO ESTOY SEGURO AUN
-resource "aws_eip" "nat_eip" {
-  domain = "vpc"
-   tags = {
-    Name = "eip_nat_gw"
-  }
+
+# Asociación de la tabla de rutas privada con la subred privada en us-east-1a
+resource "aws_route_table_association" "a_rt_project_subnet_private_az1" {
+  subnet_id      = aws_subnet.subnet_private_vpc_project_az1.id
+  route_table_id = aws_route_table.rt_private.id
 }
+# Crear un Elastic IP para el NAT Gateway / NO ESTOY SEGURO AUN
+
+#resource "aws_eip" "nat_eip" {
+#  domain = "vpc"
+#   tags = {
+#    Name = "eip_nat_gw"
+#  }
+#}
 
 
 # Crear el NAT Gateway en la subred pública
-resource "aws_nat_gateway" "nat_gw" {
-  allocation_id = aws_eip.nat_eip.id
-  subnet_id     = aws_subnet.subnet_public_vpc_project.id
+#resource "aws_nat_gateway" "nat_gw" {
+#  allocation_id = aws_eip.nat_eip.id
+#  subnet_id     = aws_subnet.subnet_public_vpc_project.id
 
-  tags = {
-    Name = "nat_gw"
-  }
-}
+#  tags = {
+#    Name = "nat_gw"
+#  }
+#}
 
 
 # Ruta en la tabla de rutas privada para redirigir el tráfico de Internet a través del NAT Gateway
-resource "aws_route" "private_route" {
-  route_table_id         = aws_route_table.rt_private.id
-  destination_cidr_block = "0.0.0.0/0"
-  nat_gateway_id         = aws_nat_gateway.nat_gw.id
-}
+#resource "aws_route" "private_route" {
+#  route_table_id         = aws_route_table.rt_private.id
+#  destination_cidr_block = "0.0.0.0/0"
+#  nat_gateway_id         = aws_nat_gateway.nat_gw.id
+#}

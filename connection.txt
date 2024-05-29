@@ -1,0 +1,26 @@
+1. Conectarse a la instancía vía SSH, teniendo el pair-key llamado 
+"server-taller-1-key-pair.pem"
+
+   ssh -i "server-taller-1-key-pair.pem" ubuntu@ec2-44-198-238-104.compute-1.amazonaws.com
+
+
+2. Actualizar paquetes del OS 
+
+    sudo apt-get update
+
+3. Instalar cliente de mysql para testear la conexion 
+
+    sudo apt install -y mysql-client
+
+4. conectarse teniendo los siguientes para metros de RDS
+    - host
+    - user
+    - password
+    - database name
+
+     mysql -h mysql-project.chqcgamuilok.us-east-1.rds.amazonaws.com -u proyecto -p
+     Enter password: [poner la contraseña]
+
+5. verificar con :
+
+    show databases;
