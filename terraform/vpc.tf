@@ -76,7 +76,10 @@ resource "aws_route_table_association" "a_rt_project_subnet_private" {
 
 # Crear un Elastic IP para el NAT Gateway / NO ESTOY SEGURO AUN
 resource "aws_eip" "nat_eip" {
-  vpc = true
+  domain = "vpc"
+   tags = {
+    Name = "eip_nat_gw"
+  }
 }
 
 
