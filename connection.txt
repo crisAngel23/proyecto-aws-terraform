@@ -24,3 +24,28 @@
 5. verificar con :
 
     show databases;
+
+6. crear la base de datos
+
+    create database mysql_project;
+
+----------------------------------- Instalacion Node, NPM & PM2 on EC2---------------------- 
+
+1- // this line installs curl on the Ubuntu server (run just once)
+$ sudo apt-get install curl
+
+2- // this line downloads Node.js (run just once)
+$ curl -sL https://deb.nodesource.com/setup_16.x | sudo -E bash -
+
+3- // this line installs node (run just once)
+$ sudo apt-get install nodejs
+
+
+// run this while you are connected to your EC2 instance (run just once)
+$ git clone 'your repo link'
+
+//install all dependencies 
+$ npm install 
+
+//Crear el archivo con las propiedades de db y s3
+nano .env.local

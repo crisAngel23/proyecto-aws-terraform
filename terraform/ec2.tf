@@ -8,6 +8,9 @@ resource "aws_instance" "web_server_project" {
     security_groups = [aws_security_group.sg_web_server_project.id]
 
 
+    # ESTO SE PUEDE QUITAR
+    iam_instance_profile = aws_iam_instance_profile.ec2_s3_access_profile.name
+
      tags = {
       Name = "web_server_project"
     }
@@ -66,9 +69,61 @@ resource "aws_security_group" "sg_web_server_project" {
         description = "Allow HTTP"
     } 
 
+    ingress{
+        from_port  = 3000
+        to_port   = 3000
+        protocol  = "tcp"
+        cidr_blocks = ["0.0.0.0/0"]
+        description = "Allow NODE.js server"
+    } 
 
     tags = {
         Name="sg_web_server_project"
     }
 
+}
+
+
+
+
+# Bucket s3
+resource "aws_iam_role" "ec2_s3_access" {
+  name = "ec2_s3_access"
+
+  assume_role_policy = jsonencode({
+    Version = "2012-10-17"
+    Statement = [
+      {
+        Action = "sts:AssumeRole"
+        Effect = "Allow"
+        Principal = {
+          Service = "ec2.amazonaws.com"
+        }
+      }
+    ]
+  })
+}
+
+resource "aws_iam_role_policy" "ec2_s3_policy" {
+  name   = "ec2_s3_policy"
+  role   = aws_iam_role.ec2_s3_access.id
+  policy = jsonencode({
+    Version = "2012-10-17"
+    Statement = [
+      {
+        Effect = "Allow"
+        Action = [
+          "s3:PutObject",
+          "s3:GetObject"
+        ]
+        Resource = "${aws_s3_bucket.cris_johan_project.arn}/*"
+      }
+    ]
+  })
+}
+
+
+resource "aws_iam_instance_profile" "ec2_s3_access_profile" {
+  name = "ec2_s3_access_profile"
+  role = aws_iam_role.ec2_s3_access.name
 }
